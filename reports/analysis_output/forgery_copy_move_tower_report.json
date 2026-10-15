@@ -1,0 +1,63 @@
+{
+    "filename": "forgery_copy_move_tower.jpg",
+    "statistics": {
+        "mean_brightness": 110.33,
+        "std_deviation": 41.43,
+        "sharpness_var": 480.52,
+        "entropy": 5.635,
+        "height": 480,
+        "width": 640,
+        "channels": 3
+    },
+    "metadata": {
+        "exif_found": false,
+        "metadata_found": true,
+        "is_suspicious": false,
+        "reasons": [
+            "Headers present with no overt editing software signatures."
+        ],
+        "tags": {
+            "jfif": "257",
+            "jfif_version": "1, 1",
+            "jfif_unit": "0",
+            "jfif_density": "1, 1"
+        },
+        "software_detected": null,
+        "camera_model": null,
+        "timestamp_original": null,
+        "timestamp_modified": null,
+        "file_format": "JPEG",
+        "image_size": "640x480",
+        "color_mode": "RGB"
+    },
+    "ela_analysis": {
+        "mean_error": 1.53,
+        "std_error": 1.4,
+        "high_error_ratio": 0.011,
+        "score": 7.3
+    },
+    "copy_move_analysis": {
+        "matches": 16,
+        "clusters": 2,
+        "is_tampered": true,
+        "confidence": 99.0
+    },
+    "splicing_analysis": {
+        "variance_ratio": 1.91,
+        "score": 12.7,
+        "is_splicing_detected": false
+    },
+    "final_verdict": {
+        "verdict": "TAMPERED / FORGERY DETECTED",
+        "risk_level": "HIGH",
+        "confidence_score": 98.0,
+        "status_color": "#E53935",
+        "primary_technique": "Copy-Move Cloned Duplication",
+        "breakdown": {
+            "ela_score": 7.3,
+            "copy_move_matches": 16,
+            "noise_inconsistency": 12.7,
+            "exif_suspicious": false
+        }
+    }
+}

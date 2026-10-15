@@ -1,0 +1,38 @@
+[
+    {
+        "filename": "authentic/authentic_landscape.jpg",
+        "is_tampered": false,
+        "tampering_type": "none",
+        "description": "Original untouched natural landscape with uniform sensor noise."
+    },
+    {
+        "filename": "authentic/authentic_lake.jpg",
+        "is_tampered": false,
+        "tampering_type": "none",
+        "description": "Original untouched mountain lake scene with single sailboat."
+    },
+    {
+        "filename": "tampered/copy_move/forgery_copy_move_tower.jpg",
+        "is_tampered": true,
+        "tampering_type": "copy_move",
+        "description": "Windmill tower duplicated to right side of landscape via copy-move."
+    },
+    {
+        "filename": "tampered/copy_move/forgery_copy_move_boat.jpg",
+        "is_tampered": true,
+        "tampering_type": "copy_move",
+        "description": "Sailboat cloned across the lake surface to deceive vessel count."
+    },
+    {
+        "filename": "tampered/splicing/forgery_spliced_uav.jpg",
+        "is_tampered": true,
+        "tampering_type": "splicing",
+        "description": "Foreign aerial vehicle spliced into sky with mismatched compression quality."
+    },
+    {
+        "filename": "tampered/splicing/forgery_spliced_balloon.jpg",
+        "is_tampered": true,
+        "tampering_type": "splicing",
+        "description": "Foreign hot-air balloon spliced into mountain sky with anomalous noise."
+    }
+]
