@@ -261,14 +261,14 @@ class ForensicAnalyzerGUI:
 
             # Update Verdict Banner
             if verdict["risk_level"] == "HIGH":
-                v_bg = "#D32F2F"
+                v_bg = "#312E81"
             elif verdict["risk_level"] == "MODERATE":
                 v_bg = "#F57C00"
             else:
                 v_bg = "#388E3C"
 
             self.lbl_verdict.config(
-                text=f"VERDICT: {verdict['verdict']}   |   CONFIDENCE: {verdict['confidence_score']}%",
+                text=f"VERDICT: {verdict['verdict']}   |   FORENSIC RISK: {verdict['forensic_risk_score']}%",
                 bg=v_bg,
                 fg="#FFFFFF"
             )
@@ -278,11 +278,11 @@ class ForensicAnalyzerGUI:
             log_text = (
                 f"File: {os.path.basename(self.current_image_path)} | Size: {stats['width']}x{stats['height']} px | Entropy: {stats['entropy']} bits\n"
                 f"----------------------------------------------------------------------------------------------------\n"
-                f"• Verdict: {verdict['verdict']} (Confidence: {verdict['confidence_score']}%, Risk: {verdict['risk_level']})\n"
+                f"• Verdict: {verdict['verdict']} (Forensic Risk: {verdict['forensic_risk_score']}%, Risk: {verdict['risk_level']})\n"
                 f"• Primary Indicator: {verdict['primary_technique']}\n"
                 f"• Copy-Move: {cm_res['match_count']} duplicated keypoint pairs detected across {cm_res['clusters']} spatial clusters\n"
                 f"• Error Level Analysis (ELA): Score {ela_res['ela_tampering_score']}/100 | Mean Error: {ela_res['mean_error']} | Outliers: {ela_res['high_error_ratio']}%\n"
-                f"• Noise Inconsistency / Splicing: P95/Med Ratio: {splice_res['variance_ratio']}x (Normal < 3.0x)\n"
+                f"• Noise Inconsistency / Splicing: P95/Med Ratio: {splice_res['variance_ratio']}x\n"
                 f"• EXIF Metadata: {'[ALERT] ' + '; '.join(meta['reasons']) if meta['is_suspicious'] else 'No software tampering detected in headers.'}\n"
             )
 

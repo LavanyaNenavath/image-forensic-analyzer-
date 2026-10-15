@@ -34,13 +34,13 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS for high-tech Cyber Security / Forensics aesthetic
+# Custom CSS for high-tech Cyber Security / Forensics aesthetic (Zero Red Palette)
 st.markdown("""
 <style>
     .main-header {
         font-size: 2.2rem;
         font-weight: 800;
-        background: linear-gradient(90deg, #1E88E5, #00E676);
+        background: linear-gradient(90deg, #0284C7, #00E676);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         margin-bottom: 0.2rem;
@@ -60,11 +60,45 @@ st.markdown("""
     }
     .verdict-box {
         padding: 18px;
-        border-radius: 10px;
+        border-radius: 12px;
         text-align: center;
         font-size: 1.35rem;
         font-weight: bold;
         margin: 15px 0;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+    }
+    /* Primary buttons: Electric Cobalt / Teal gradient - Zero Red */
+    button[kind="primary"], .stButton > button {
+        background: linear-gradient(135deg, #0284C7 0%, #0D9488 100%) !important;
+        color: #FFFFFF !important;
+        border: none !important;
+        border-radius: 8px !important;
+        font-weight: 600 !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3) !important;
+    }
+    button[kind="primary"]:hover, .stButton > button:hover {
+        background: linear-gradient(135deg, #0369A1 0%, #0F766E 100%) !important;
+        box-shadow: 0 6px 16px rgba(2, 132, 199, 0.5) !important;
+        transform: translateY(-1px) !important;
+    }
+    /* Sliders: Blue/Cyan Accent - Zero Red */
+    div[data-baseweb="slider"] div {
+        background-color: #0284C7 !important;
+    }
+    div[data-testid="stSlider"] div[role="slider"] {
+        background-color: #38BDF8 !important;
+        border-color: #0284C7 !important;
+    }
+    /* Tabs: Electric Cyan Highlight */
+    button[data-baseweb="tab"][aria-selected="true"] {
+        color: #38BDF8 !important;
+        border-bottom-color: #38BDF8 !important;
+    }
+    /* Radio buttons */
+    div[role="radiogroup"] input:checked + div {
+        border-color: #0284C7 !important;
+        background-color: #0284C7 !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -140,7 +174,7 @@ elif mode == "Load Verified Demonstration Dataset":
 
 elif mode == "Run Benchmark Evaluation":
     st.markdown("### 📊 Automated Forensics Benchmark Suite")
-    st.write("Evaluates the forensic analyzer against ground truth labels across all test images.")
+    st.write("Evaluates the forensic analyzer against ground truth labels across the small synthetic demonstration dataset.")
     if st.button("Run Full Benchmark & Generate Confusion Matrix", type="primary"):
         with st.spinner("Analyzing dataset images and computing metrics..."):
             from evaluate import evaluate_dataset
@@ -164,7 +198,7 @@ if image_to_process is not None:
     is_valid, err_msg, pil_img, np_img = validate_image(image_to_process)
 
     if not is_valid:
-        st.error(f"❌ Image Validation Failed: {err_msg}")
+        st.warning(f"⚠️ Image Validation Notice: {err_msg}")
         st.info("💡 Supported formats: JPG, JPEG, PNG, WEBP, BMP, TIFF. Images must be at least 16x16 pixels and not corrupted.")
     else:
         # Step 2: Unified Forensic Processing Pipeline
@@ -174,7 +208,7 @@ if image_to_process is not None:
                 stats = compute_image_statistics(np_img)
 
                 # 1. EXIF and Header Metadata Audit
-                meta = extract_metadata(image_to_process)
+                meta = extract_metadata(pil_img)
 
                 # 2. Error Level Analysis (ELA)
                 ela_res = perform_ela(np_img, quality=ela_quality, scale_factor=ela_scale)
@@ -193,22 +227,25 @@ if image_to_process is not None:
                     exif_suspicious=meta["is_suspicious"]
                 )
 
-            # Final Verdict Banner
+            # Final Verdict Banner (Zero red colors - high-tech indigo, amber, emerald palette)
             if verdict["risk_level"] == "HIGH":
-                banner_bg = "#B71C1C"
-                banner_icon = "🚨"
+                banner_bg = "linear-gradient(135deg, #1E1B4B 0%, #312E81 100%)"
+                banner_border = "2px solid #818CF8"
+                banner_icon = "⚡"
             elif verdict["risk_level"] == "MODERATE":
-                banner_bg = "#E65100"
+                banner_bg = "linear-gradient(135deg, #1E293B 0%, #334155 100%)"
+                banner_border = "2px solid #F59E0B"
                 banner_icon = "⚠️"
             else:
-                banner_bg = "#1B5E20"
+                banner_bg = "linear-gradient(135deg, #064E3B 0%, #065F46 100%)"
+                banner_border = "2px solid #10B981"
                 banner_icon = "✅"
 
             st.markdown(f"""
-            <div class="verdict-box" style="background-color: {banner_bg}; color: white;">
+            <div class="verdict-box" style="background: {banner_bg}; border: {banner_border}; color: white;">
                 {banner_icon} VERDICT: {verdict['verdict']}<br>
-                <span style="font-size: 1.05rem; font-weight: normal;">
-                    Tampering Confidence: <b>{verdict['confidence_score']}%</b> &nbsp;|&nbsp;
+                <span style="font-size: 1.05rem; font-weight: normal; color: #E2E8F0;">
+                    Forensic Risk Score: <b style="color: #67E8F9;">{verdict['forensic_risk_score']}%</b> &nbsp;|&nbsp;
                     Risk: <b>{verdict['risk_level']}</b> &nbsp;|&nbsp;
                     Primary Technique: <b>{verdict['primary_technique']}</b>
                 </span>
@@ -217,11 +254,11 @@ if image_to_process is not None:
 
             # Forensic Metric Summary Cards
             m1, m2, m3, m4, m5 = st.columns(5)
-            m1.metric("Confidence Score", f"{verdict['confidence_score']}%", delta=f"{verdict['risk_level']} Risk", delta_color="inverse" if verdict['risk_level'] != "LOW" else "normal")
-            m2.metric("Copy-Move Pairs", f"{cm_res['match_count']}", delta="Cloned Keypoints" if cm_res['is_tampered'] else "Clean")
-            m3.metric("ELA Anomaly Score", f"{ela_res['ela_tampering_score']}/100", delta=f"{ela_res['high_error_ratio']}% Outliers")
-            m4.metric("Noise Discrepancy", f"{splice_res['variance_ratio']}x", delta="Spliced" if splice_res['is_splicing_detected'] else "Uniform")
-            m5.metric("EXIF Status", "Suspicious" if meta["is_suspicious"] else "Clean", delta=meta.get("software_detected") or "No Editor Tag")
+            m1.metric("Forensic Risk Score", f"{verdict['forensic_risk_score']}%", delta=f"{verdict['risk_level']} Risk", delta_color="off")
+            m2.metric("Copy-Move Pairs", f"{cm_res['match_count']}", delta="Cloned Keypoints" if cm_res['is_tampered'] else "Clean", delta_color="off")
+            m3.metric("ELA Anomaly Score", f"{ela_res['ela_tampering_score']}/100", delta=f"{ela_res['high_error_ratio']}% Outliers", delta_color="off")
+            m4.metric("Noise Discrepancy", f"{splice_res['variance_ratio']}x", delta="Potential Inconsistency" if splice_res['is_splicing_detected'] else "Uniform", delta_color="off")
+            m5.metric("EXIF Status", "Suspicious" if meta["is_suspicious"] else "Clean", delta=meta.get("software_detected") or "No Editor Tag", delta_color="off")
 
             # Detailed Forensic Investigation Tabs
             tab_overview, tab_ela, tab_cm, tab_splice, tab_exif, tab_stats = st.tabs([
@@ -245,14 +282,15 @@ if image_to_process is not None:
                 with r2_c1:
                     st.image(cm_res['annotated_image'], caption=f"3. Copy-Move Cloned Points ({cm_res['match_count']} pairs)", use_container_width=True)
                 with r2_c2:
-                    st.image(splice_res['variance_heatmap_rgb'], caption=f"4. Splicing Noise Inconsistency Map (Ratio: {splice_res['variance_ratio']}x)", use_container_width=True)
+                    st.image(splice_res['variance_heatmap_rgb'], caption=f"4. Potential Noise Inconsistency Map (Ratio: {splice_res['variance_ratio']}x)", use_container_width=True)
 
             with tab_ela:
                 st.markdown("#### Error Level Analysis (ELA) Deep-Dive")
                 st.write("""
-                **Forensic Principle**: When a JPEG image is modified and re-saved, the modified parts
-                experience different quantization error compared to the untouched areas.
-                Regions with mismatched brightness or colorful error patterns indicate foreign insertions.
+                **Forensic Principle**: When an image is modified and re-saved, previously modified areas
+                may experience different quantization error compared to untouched areas.
+                Regions with noticeable brightness variations or distinct error patterns may serve as possible
+                indicators of editing or suspicious patterns, rather than definitive proof of tampering.
                 """)
                 c_ela1, c_ela2 = st.columns(2)
                 c_ela1.image(ela_res['ela_image_np'], caption="Enhanced Difference Map", use_container_width=True)
@@ -262,7 +300,7 @@ if image_to_process is not None:
                 - **Mean Compression Error**: `{ela_res['mean_error']}`
                 - **Error Standard Deviation**: `{ela_res['std_error']}`
                 - **High-Error Pixel Ratio**: `{ela_res['high_error_ratio']}%`
-                - **Algorithm Verdict**: {'Suspicious localized compression mismatch' if ela_res['ela_tampering_score'] >= 30 else 'Uniform compression across image'}
+                - **Algorithm Assessment**: {'Possible localized compression discrepancy / suspicious pattern' if ela_res['ela_tampering_score'] >= 30 else 'Uniform compression pattern across image'}
                 """)
 
             with tab_cm:
@@ -283,17 +321,17 @@ if image_to_process is not None:
             with tab_splice:
                 st.markdown("#### Splicing & Noise Residual Analysis")
                 st.write("""
-                **Forensic Principle**: Camera sensors produce high-frequency noise patterns (PRNU).
-                An object spliced from an external source exhibits an anomalous local noise variance.
+                **Forensic Principle**: Camera sensors produce characteristic high-frequency noise distributions.
+                Foreign object insertions or spliced elements may introduce localized noise variance discrepancies.
                 """)
                 s_c1, s_c2 = st.columns(2)
                 s_c1.image(splice_res['noise_residual_rgb'], caption="Extracted High-Frequency Noise Residual", use_container_width=True)
                 s_c2.image(splice_res['laplacian_residual_rgb'], caption="High-Pass Laplacian Edge Discontinuity", use_container_width=True)
 
                 st.markdown(f"""
-                - **P95 / Median Noise Variance Ratio**: `{splice_res['variance_ratio']}x` (Normal < 3.0x)
+                - **P95 / Median Noise Variance Ratio**: `{splice_res['variance_ratio']}x`
                 - **Noise Inconsistency Score**: `{splice_res['noise_inconsistency_score']} / 100`
-                - **Splicing Classification**: {'Foreign object insertion / splicing detected' if splice_res['is_splicing_detected'] else 'Homogeneous sensor noise'}
+                - **Noise Consistency Assessment**: {'Potential noise inconsistency detected' if splice_res['is_splicing_detected'] else 'Relatively uniform noise distribution'}
                 """)
 
             with tab_exif:
@@ -301,7 +339,7 @@ if image_to_process is not None:
                 if meta["exif_found"] or meta.get("metadata_found"):
                     st.success(f"Metadata Headers Found in Image File (Format: {meta.get('file_format', 'Unknown')}).")
                     if meta["is_suspicious"]:
-                        st.error("⚠️ Suspicious Indicators:")
+                        st.warning("⚠️ Suspicious Indicators:")
                         for r in meta["reasons"]:
                             st.write(f"- {r}")
                     else:
@@ -327,6 +365,31 @@ if image_to_process is not None:
                 "source_evidence": source_name,
                 "final_verdict": verdict,
                 "image_stats": stats,
+                "ela_analysis": {
+                    "score": ela_res["ela_tampering_score"],
+                    "mean_error": ela_res["mean_error"],
+                    "std_error": ela_res["std_error"],
+                    "high_error_ratio": ela_res["high_error_ratio"],
+                    "interpretation": "Possible localized compression discrepancy" if ela_res["ela_tampering_score"] >= 30 else "Uniform compression pattern"
+                },
+                "copy_move_analysis": {
+                    "matched_pairs": cm_res["match_count"],
+                    "clusters": cm_res["clusters"],
+                    "module_confidence": cm_res["confidence"],
+                    "is_tampered": cm_res["is_tampered"]
+                },
+                "noise_analysis": {
+                    "noise_inconsistency_score": splice_res["noise_inconsistency_score"],
+                    "variance_ratio": splice_res["variance_ratio"],
+                    "assessment": "Potential noise inconsistency detected" if splice_res["is_splicing_detected"] else "Relatively uniform noise distribution"
+                },
+                "metadata_analysis": {
+                    "exif_found": meta["exif_found"],
+                    "is_suspicious": meta["is_suspicious"],
+                    "software_detected": meta.get("software_detected"),
+                    "camera_model": meta.get("camera_model"),
+                    "audit_notes": meta["reasons"]
+                },
                 "ela_summary": ela_res["ela_tampering_score"],
                 "copy_move_matches": cm_res["match_count"],
                 "splicing_score": splice_res["noise_inconsistency_score"],
@@ -341,5 +404,5 @@ if image_to_process is not None:
             )
 
         except Exception as e:
-            st.error(f"❌ Forensic analysis encountered an error while processing '{source_name}': {str(e)}")
+            st.warning(f"⚠️ Forensic analysis notice while processing '{source_name}': {str(e)}")
             st.info("Please verify that the uploaded image is a valid, readable graphic file.")

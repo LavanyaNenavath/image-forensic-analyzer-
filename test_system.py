@@ -102,13 +102,13 @@ class TestImageForensicAnalyzer(unittest.TestCase):
             ela_score=15.0, copy_move_matches=14, noise_score=10.0, exif_suspicious=False
         )
         self.assertEqual(verdict_tampered["risk_level"], "HIGH")
-        self.assertIn("TAMPERED", verdict_tampered["verdict"])
+        self.assertIn("POTENTIAL TAMPERING", verdict_tampered["verdict"])
 
         verdict_authentic = calculate_overall_verdict(
             ela_score=5.0, copy_move_matches=0, noise_score=10.0, exif_suspicious=False
         )
         self.assertEqual(verdict_authentic["risk_level"], "LOW")
-        self.assertIn("AUTHENTIC", verdict_authentic["verdict"])
+        self.assertIn("NO SIGNIFICANT FORENSIC INDICATORS", verdict_authentic["verdict"])
 
     def test_uploaded_file_stream_handling(self):
         """
@@ -143,7 +143,7 @@ class TestImageForensicAnalyzer(unittest.TestCase):
             meta["is_suspicious"]
         )
         self.assertIn("verdict", verdict)
-        self.assertIn("confidence_score", verdict)
+        self.assertIn("forensic_risk_score", verdict)
 
     def test_all_supported_formats(self):
         """

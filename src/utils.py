@@ -260,12 +260,15 @@ def calculate_overall_verdict(ela_score, copy_move_matches, noise_score, exif_su
     trigger different specialized indicators:
 
     1. Copy-Move: Triggers keypoint duplicate matches and spatial clusters.
-    2. Splicing: Triggers high-frequency noise variance discrepancy across blocks.
-    3. Compression/Retouching: Triggers high ELA anomaly and variance.
-    4. EXIF: Detects editing software footprints (Photoshop/GIMP).
+    2. Splicing / Noise: Triggers high-frequency noise variance discrepancy across blocks.
+    3. Compression/Retouching: Triggers ELA anomaly and compression discrepancy patterns.
+    4. EXIF: Detects editing software footprints (Photoshop/GIMP). EXIF metadata serves
+       as supporting evidence, not the primary score.
 
     The ensemble evaluates the maximum indicator score and adds corroboration bonuses
     when multiple forensic techniques identify concurrent anomalies.
+    The resulting score is a rule-based forensic risk/suspicion score, not a calibrated
+    statistical probability or confidence ratio.
     """
     # 1. Copy-Move normalized score (0 - 100)
     if copy_move_matches >= 8:
@@ -278,7 +281,8 @@ def calculate_overall_verdict(ela_score, copy_move_matches, noise_score, exif_su
         cm_score = 5.0
 
     # 2. Splicing / Noise normalized score (0 - 100)
-    # Threshold for normal image noise variance ratio is typically < 35.0
+    # The noise_score parameter is the noise inconsistency score (0 - 100),
+    # where an authentic baseline image typically exhibits low inconsistency (< 35.0).
     if noise_score >= 50.0:
         splice_score = min(98.0, float(noise_score))
     elif noise_score >= 35.0:
@@ -295,7 +299,7 @@ def calculate_overall_verdict(ela_score, copy_move_matches, noise_score, exif_su
     else:
         ela_norm = (float(ela_score) / 12.0) * 20.0
 
-    # 4. EXIF bonus
+    # 4. EXIF bonus (EXIF metadata provides supporting evidence, not primary score)
     exif_score = 75.0 if exif_suspicious else 0.0
 
     # Primary indicator dominance
@@ -312,13 +316,13 @@ def calculate_overall_verdict(ela_score, copy_move_matches, noise_score, exif_su
 
     # Classification logic
     if overall_confidence >= 65.0:
-        verdict = "TAMPERED / FORGERY DETECTED"
+        verdict = "HIGH FORENSIC RISK / POTENTIAL TAMPERING"
         risk_level = "HIGH"
-        status_color = "#E53935"  # Red
+        status_color = "#4F46E5"  # Electric Indigo (non-red alert)
         if cm_score >= 60.0 and cm_score == max_primary:
             primary_technique = "Copy-Move Cloned Duplication"
         elif splice_score >= 50.0 and splice_score == max_primary:
-            primary_technique = "Splicing / Foreign Noise Inconsistency"
+            primary_technique = "Potential Noise Inconsistency / Splicing"
         else:
             primary_technique = "Compression / Error Level Anomaly"
     elif overall_confidence >= 40.0:
@@ -327,7 +331,7 @@ def calculate_overall_verdict(ela_score, copy_move_matches, noise_score, exif_su
         status_color = "#FB8C00"  # Orange
         primary_technique = "Subtle Discrepancy Detected"
     else:
-        verdict = "AUTHENTIC / UNALTERED"
+        verdict = "NO SIGNIFICANT FORENSIC INDICATORS"
         risk_level = "LOW"
         status_color = "#43A047"  # Green
         primary_technique = "Uniform Baseline (Consistent)"
@@ -335,7 +339,7 @@ def calculate_overall_verdict(ela_score, copy_move_matches, noise_score, exif_su
     return {
         "verdict": verdict,
         "risk_level": risk_level,
-        "confidence_score": round(float(overall_confidence), 1),
+        "forensic_risk_score": round(float(overall_confidence), 1),
         "status_color": status_color,
         "primary_technique": primary_technique,
         "breakdown": {

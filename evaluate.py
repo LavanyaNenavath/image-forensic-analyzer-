@@ -42,6 +42,7 @@ def evaluate_dataset(dataset_dir="dataset", ground_truth_file=None, save_matrix_
 
     print("=" * 75)
     print("      IMAGE FORENSIC ANALYZER - PERFORMANCE EVALUATION BENCHMARK      ")
+    print("   (Evaluated on small synthetic demonstration dataset for validation)   ")
     print("=" * 75)
 
     for item in records:
@@ -82,7 +83,7 @@ def evaluate_dataset(dataset_dir="dataset", ground_truth_file=None, save_matrix_
             "filename": os.path.basename(rel_path),
             "actual": "TAMPERED" if actual_tampered else "AUTHENTIC",
             "predicted": verdict_res["verdict"],
-            "confidence": f"{verdict_res['confidence_score']}%",
+            "risk_score": f"{verdict_res['forensic_risk_score']}%",
             "matches": cm_res["match_count"],
             "ela_score": ela_res["ela_tampering_score"],
             "correct": (actual_tampered == pred_tampered)
@@ -107,11 +108,11 @@ def evaluate_dataset(dataset_dir="dataset", ground_truth_file=None, save_matrix_
 
     print(f"\nTotal Test Images Evaluated: {total}")
     print("-" * 75)
-    print(f"{'Filename':<32} | {'Actual':<10} | {'Confidence':<10} | {'Result':<8}")
+    print(f"{'Filename':<32} | {'Actual':<10} | {'Forensic Risk':<13} | {'Result':<8}")
     print("-" * 75)
     for r in results_table:
         status_sym = "[PASS]" if r["correct"] else "[FAIL]"
-        print(f"{r['filename']:<32} | {r['actual']:<10} | {r['confidence']:<10} | {status_sym:<8}")
+        print(f"{r['filename']:<32} | {r['actual']:<10} | {r['risk_score']:<13} | {status_sym:<8}")
     print("-" * 75)
 
     print("\n" + "=" * 45)
@@ -128,6 +129,8 @@ def evaluate_dataset(dataset_dir="dataset", ground_truth_file=None, save_matrix_
     print(f" Specificity         : {specificity * 100:.2f}%")
     print(f" F1-Score            : {f1_score * 100:.2f}%")
     print("=" * 45)
+    print("Note: Results represent benchmark performance on the project's small")
+    print("synthetic demonstration dataset, not proof of universal accuracy.")
 
     # Plot Confusion Matrix
     os.makedirs(os.path.dirname(save_matrix_path), exist_ok=True)

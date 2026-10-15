@@ -48,9 +48,9 @@
         "is_splicing_detected": false
     },
     "final_verdict": {
-        "verdict": "TAMPERED / FORGERY DETECTED",
+        "verdict": "HIGH FORENSIC RISK / POTENTIAL TAMPERING",
         "risk_level": "HIGH",
-        "confidence_score": 98.0,
+        "forensic_risk_score": 98.0,
         "status_color": "#E53935",
         "primary_technique": "Copy-Move Cloned Duplication",
         "breakdown": {

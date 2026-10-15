@@ -102,7 +102,7 @@ def analyze_single_image(image_path, output_dir="reports/analysis_output", show_
     splice_res = detect_splicing_noise(np_img)
     print(f"    - Noise P95/Med Ratio: {splice_res['variance_ratio']}")
     print(f"    - Inconsistency Score: {splice_res['noise_inconsistency_score']} / 100")
-    print(f"    - Splicing Verdict   : {'SPLICING DETECTED' if splice_res['is_splicing_detected'] else 'CONSISTENT NOISE'}")
+    print(f"    - Noise Consistency  : {'POTENTIAL INCONSISTENCY' if splice_res['is_splicing_detected'] else 'CONSISTENT NOISE'}")
 
     # 6. Overall Multi-Modal Decision Fusion
     verdict_info = calculate_overall_verdict(
@@ -117,13 +117,13 @@ def analyze_single_image(image_path, output_dir="reports/analysis_output", show_
     print("=" * 75)
     print(f" STATUS VERDICT       : {verdict_info['verdict']}")
     print(f" RISK LEVEL           : {verdict_info['risk_level']}")
-    print(f" CONFIDENCE SCORE     : {verdict_info['confidence_score']}%")
+    print(f" FORENSIC RISK SCORE  : {verdict_info['forensic_risk_score']}%")
     print(f" PRIMARY TECHNIQUE    : {verdict_info['primary_technique']}")
     print("=" * 75)
 
     # 7. Generate Multi-Panel Forensic Evidence Sheet
     fig, axes = plt.subplots(2, 2, figsize=(12, 10), dpi=150)
-    fig.suptitle(f"Forensic Report: {filename}\nVerdict: {verdict_info['verdict']} ({verdict_info['confidence_score']}%)",
+    fig.suptitle(f"Forensic Report: {filename}\nVerdict: {verdict_info['verdict']} ({verdict_info['forensic_risk_score']}%)",
                  fontsize=14, fontweight='bold', color=verdict_info['status_color'])
 
     # Panel 1: Original Image
